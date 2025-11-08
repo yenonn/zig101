@@ -133,6 +133,12 @@ fn demoNestedStructs() !void {
 
     person.introduce();
     std.debug.print("\n", .{});
+    const address = Address{
+        .street = "399 Piasau Garden",
+        .city = "Miri",
+        .zip = "98000",
+    };
+    std.debug.print("   My home address: {s}\n", .{try address.toString(std.heap.page_allocator)});
 }
 
 /// Struct with allocator and dynamic memory
