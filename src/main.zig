@@ -4,6 +4,7 @@ const hashtable = @import("hashtable.zig");
 const structs = @import("structs.zig");
 const constructors = @import("constructors.zig");
 const interfaces = @import("interfaces.zig");
+const strings = @import("strings.zig");
 
 pub fn main() !void {
     // Setup allocator for memory management
@@ -37,4 +38,10 @@ pub fn main() !void {
 
     // Run the writer interface example
     try interfaces.writerInterfaceExample();
+
+    // Run the String manipulation demo
+    try strings.demo(allocator);
+
+    // Run the advanced string example
+    try strings.advancedExample(allocator);
 }
