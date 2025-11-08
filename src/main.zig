@@ -115,7 +115,7 @@ fn runDemo(allocator: std.mem.Allocator, demo_name: []const u8) !void {
         },
         .interfaces => {
             try interfaces.demo(allocator);
-            try interfaces.writerInterfaceExample();
+            interfaces.writerInterfaceExample();
         },
         .strings => {
             try strings.demo(allocator);
@@ -165,7 +165,7 @@ fn runAllDemos(allocator: std.mem.Allocator) !void {
     try interfaces.demo(allocator);
 
     // Run the writer interface example
-    try interfaces.writerInterfaceExample();
+    interfaces.writerInterfaceExample();
 
     // Run the String manipulation demo
     try strings.demo(allocator);

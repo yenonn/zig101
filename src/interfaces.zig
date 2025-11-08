@@ -11,6 +11,7 @@ pub fn demo(allocator: std.mem.Allocator) !void {
     demoComptimePolymorphism();
     try demoVTablePattern(allocator);
     demoAnytypePattern();
+    writerInterfaceExample();
 
     std.debug.print("\n=== Interface Demo Complete ===\n", .{});
 }
@@ -213,7 +214,7 @@ fn demoAnytypePattern() void {
 }
 
 /// Practical Example: Simplified Writer Interface
-pub fn writerInterfaceExample() !void {
+pub fn writerInterfaceExample() void {
     std.debug.print("4. Practical Example - Simple Interface:\n", .{});
     std.debug.print("   Real-world pattern: Logger interface\n\n", .{});
 
