@@ -78,35 +78,60 @@ fn printList() void {
 }
 
 fn runDemo(allocator: std.mem.Allocator, demo_name: []const u8) !void {
-    if (std.mem.eql(u8, demo_name, "arraylist")) {
-        try array_list.demo(allocator);
-    } else if (std.mem.eql(u8, demo_name, "hashtable")) {
-        try hashtable.demo(allocator);
-        try hashtable.wordCountExample(allocator);
-    } else if (std.mem.eql(u8, demo_name, "structs")) {
-        try structs.demo(allocator);
-        try structs.studentExample(allocator);
-    } else if (std.mem.eql(u8, demo_name, "constructors")) {
-        try constructors.demo(allocator);
-        try constructors.complexConstructorExample(allocator);
-    } else if (std.mem.eql(u8, demo_name, "interfaces")) {
-        try interfaces.demo(allocator);
-        try interfaces.writerInterfaceExample();
-    } else if (std.mem.eql(u8, demo_name, "strings")) {
-        try strings.demo(allocator);
-        try strings.advancedExample(allocator);
-    } else if (std.mem.eql(u8, demo_name, "errors")) {
-        try errors.demo(allocator);
-        try errors.advancedErrorExample();
-    } else if (std.mem.eql(u8, demo_name, "concurrency")) {
-        try concurrency.demo(allocator);
-        try concurrency.advancedExample(allocator);
-    } else if (std.mem.eql(u8, demo_name, "all")) {
-        try runAllDemos(allocator);
-    } else {
+    // Use std.meta.stringToEnum for cleaner pattern matching
+    const DemoType = enum {
+        arraylist,
+        hashtable,
+        structs,
+        constructors,
+        interfaces,
+        strings,
+        errors,
+        concurrency,
+        all,
+    };
+
+    const demo = std.meta.stringToEnum(DemoType, demo_name) orelse {
         std.debug.print("Unknown demo: '{s}'\n\n", .{demo_name});
         printList();
         return error.UnknownDemo;
+    };
+
+    switch (demo) {
+        .arraylist => {
+            try array_list.demo(allocator);
+        },
+        .hashtable => {
+            try hashtable.demo(allocator);
+            try hashtable.wordCountExample(allocator);
+        },
+        .structs => {
+            try structs.demo(allocator);
+            try structs.studentExample(allocator);
+        },
+        .constructors => {
+            try constructors.demo(allocator);
+            try constructors.complexConstructorExample(allocator);
+        },
+        .interfaces => {
+            try interfaces.demo(allocator);
+            try interfaces.writerInterfaceExample();
+        },
+        .strings => {
+            try strings.demo(allocator);
+            try strings.advancedExample(allocator);
+        },
+        .errors => {
+            try errors.demo(allocator);
+            try errors.advancedErrorExample();
+        },
+        .concurrency => {
+            try concurrency.demo(allocator);
+            try concurrency.advancedExample(allocator);
+        },
+        .all => {
+            try runAllDemos(allocator);
+        },
     }
 }
 
