@@ -53,34 +53,34 @@ pub fn demo(allocator: std.mem.Allocator) !void {
 
 // Helper function to replace all occurrences of a substring
 fn replaceAll(allocator: std.mem.Allocator, input: []const u8, old: []const u8, new: []const u8) ![]u8 {
-    var result = std.ArrayList(u8).init(allocator);
-    defer result.deinit();
+    var result: std.ArrayList(u8) = .{};
+    defer result.deinit(allocator);
 
     var i: usize = 0;
     while (i < input.len) {
         if (i + old.len <= input.len and std.mem.eql(u8, input[i .. i + old.len], old)) {
-            try result.appendSlice(new);
+            try result.appendSlice(allocator, new);
             i += old.len;
         } else {
-            try result.append(input[i]);
+            try result.append(allocator, input[i]);
             i += 1;
         }
     }
 
-    return result.toOwnedSlice();
+    return result.toOwnedSlice(allocator);
 }
 
 pub fn advancedExample(allocator: std.mem.Allocator) !void {
     std.debug.print("\n=== Advanced String Manipulation ===\n", .{});
 
     // Building a string dynamically
-    var builder = std.ArrayList(u8).init(allocator);
-    defer builder.deinit();
+    var builder: std.ArrayList(u8) = .{};
+    defer builder.deinit(allocator);
 
-    try builder.appendSlice("Building ");
-    try builder.appendSlice("a ");
-    try builder.appendSlice("string ");
-    try builder.appendSlice("dynamically!");
+    try builder.appendSlice(allocator, "Building ");
+    try builder.appendSlice(allocator, "a ");
+    try builder.appendSlice(allocator, "string ");
+    try builder.appendSlice(allocator, "dynamically!");
 
     std.debug.print("Built string: {s}\n", .{builder.items});
 

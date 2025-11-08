@@ -17,14 +17,14 @@ pub fn demo(allocator: std.mem.Allocator) !void {
 /// Demonstrates ArrayList operations with integers
 fn demoWithIntegers(allocator: std.mem.Allocator) !void {
     // Create an ArrayList of integers
-    var list = std.array_list.AlignedManaged(i32, null).init(allocator);
-    defer list.deinit(); // Important: free memory when done
+    var list: std.ArrayList(i32) = .{};
+    defer list.deinit(allocator); // Important: free memory when done
 
     // 1. Adding items
     std.debug.print("1. Adding items:\n", .{});
-    try list.append(10);
-    try list.append(20);
-    try list.append(30);
+    try list.append(allocator, 10);
+    try list.append(allocator, 20);
+    try list.append(allocator, 30);
     std.debug.print("   Added: 10, 20, 30\n", .{});
     std.debug.print("   Length: {}\n", .{list.items.len});
     std.debug.print("   Capacity: {}\n\n", .{list.capacity});
@@ -60,7 +60,7 @@ fn demoWithIntegers(allocator: std.mem.Allocator) !void {
 
     // 6. Insert at specific position
     std.debug.print("6. Insert at position:\n", .{});
-    try list.insert(0, 5);
+    try list.insert(allocator, 0, 5);
     std.debug.print("   Inserted 5 at index 0\n", .{});
     std.debug.print("   Values: ", .{});
     for (list.items) |item| {
@@ -71,7 +71,7 @@ fn demoWithIntegers(allocator: std.mem.Allocator) !void {
     // 7. AppendSlice - add multiple items at once
     std.debug.print("7. Append multiple items:\n", .{});
     const more_items = [_]i32{ 40, 50, 60 };
-    try list.appendSlice(&more_items);
+    try list.appendSlice(allocator, &more_items);
     std.debug.print("   Added: 40, 50, 60\n", .{});
     std.debug.print("   All values: ", .{});
     for (list.items) |item| {
@@ -91,12 +91,12 @@ fn demoWithStrings(allocator: std.mem.Allocator) !void {
     // In Zig, strings are []const u8 (slices of constant bytes)
     // A string literal like "Hello" is UTF-8 encoded bytes
     std.debug.print("9. ArrayList with strings:\n", .{});
-    var string_list = std.array_list.AlignedManaged([]const u8, null).init(allocator);
-    defer string_list.deinit();
+    var string_list: std.ArrayList([]const u8) = .{};
+    defer string_list.deinit(allocator);
 
-    try string_list.append("Hello");
-    try string_list.append("Zig");
-    try string_list.append("ArrayList");
+    try string_list.append(allocator, "Hello");
+    try string_list.append(allocator, "Zig");
+    try string_list.append(allocator, "ArrayList");
 
     for (string_list.items, 0..) |str, i| {
         std.debug.print("   [{}]: {s}\n", .{ i, str });
@@ -124,17 +124,17 @@ const Person = struct {
 /// Demonstrates ArrayList with custom struct types
 fn demoWithStructs(allocator: std.mem.Allocator) !void {
     std.debug.print("10. ArrayList with structs:\n", .{});
-    var people = std.ArrayList(Person).init(allocator);
-    defer people.deinit();
+    var people: std.ArrayList(Person) = .{};
+    defer people.deinit(allocator);
 
     // Adding struct instances
-    try people.append(.{ .name = "Alice", .age = 30 });
-    try people.append(.{ .name = "Bob", .age = 25 });
-    try people.append(.{ .name = "Charlie", .age = 35 });
+    try people.append(allocator, .{ .name = "Alice", .age = 30 });
+    try people.append(allocator, .{ .name = "Bob", .age = 25 });
+    try people.append(allocator, .{ .name = "Charlie", .age = 35 });
 
     std.debug.print("   People in list:\n", .{});
     for (people.items, 0..) |person, i| {
-        std.debug.print("   [{}]: {}\n", .{ i, person });
+        std.debug.print("   [{}]: {any}\n", .{ i, person });
     }
 
     // Modifying a struct field
@@ -146,14 +146,14 @@ fn demoWithStructs(allocator: std.mem.Allocator) !void {
 /// Demonstrates ArrayList with floating-point numbers
 fn demoWithFloats(allocator: std.mem.Allocator) !void {
     std.debug.print("11. ArrayList with floats:\n", .{});
-    var numbers = std.ArrayList(f64).init(allocator);
-    defer numbers.deinit();
+    var numbers: std.ArrayList(f64) = .{};
+    defer numbers.deinit(allocator);
 
     // Adding floating-point numbers
-    try numbers.append(3.14159);
-    try numbers.append(2.71828);
-    try numbers.append(1.41421);
-    try numbers.append(1.73205);
+    try numbers.append(allocator, 3.14159);
+    try numbers.append(allocator, 2.71828);
+    try numbers.append(allocator, 1.41421);
+    try numbers.append(allocator, 1.73205);
 
     std.debug.print("   Mathematical constants:\n", .{});
     const names = [_][]const u8{ "Pi", "e", "√2", "√3" };
@@ -174,15 +174,15 @@ fn demoWithFloats(allocator: std.mem.Allocator) !void {
 /// Demonstrates ArrayList with boolean values
 fn demoWithBooleans(allocator: std.mem.Allocator) !void {
     std.debug.print("12. ArrayList with booleans:\n", .{});
-    var flags = std.ArrayList(bool).init(allocator);
-    defer flags.deinit();
+    var flags: std.ArrayList(bool) = .{};
+    defer flags.deinit(allocator);
 
     // Adding boolean values
-    try flags.append(true);
-    try flags.append(false);
-    try flags.append(true);
-    try flags.append(true);
-    try flags.append(false);
+    try flags.append(allocator, true);
+    try flags.append(allocator, false);
+    try flags.append(allocator, true);
+    try flags.append(allocator, true);
+    try flags.append(allocator, false);
 
     std.debug.print("   Flags: ", .{});
     for (flags.items) |flag| {
@@ -204,35 +204,35 @@ fn demoNestedArrayLists(allocator: std.mem.Allocator) !void {
     std.debug.print("13. Nested ArrayLists (2D array-like structure):\n", .{});
 
     // Create an ArrayList that holds other ArrayLists
-    var matrix = std.ArrayList(std.ArrayList(i32)).init(allocator);
+    var matrix: std.ArrayList(std.ArrayList(i32)) = .{};
     defer {
         // Important: must deinit each inner ArrayList
         for (matrix.items) |*row| {
-            row.deinit();
+            row.deinit(allocator);
         }
-        matrix.deinit();
+        matrix.deinit(allocator);
     }
 
     // Create first row [1, 2, 3]
-    var row1 = std.ArrayList(i32).init(allocator);
-    try row1.append(1);
-    try row1.append(2);
-    try row1.append(3);
-    try matrix.append(row1);
+    var row1: std.ArrayList(i32) = .{};
+    try row1.append(allocator, 1);
+    try row1.append(allocator, 2);
+    try row1.append(allocator, 3);
+    try matrix.append(allocator, row1);
 
     // Create second row [4, 5, 6]
-    var row2 = std.ArrayList(i32).init(allocator);
-    try row2.append(4);
-    try row2.append(5);
-    try row2.append(6);
-    try matrix.append(row2);
+    var row2: std.ArrayList(i32) = .{};
+    try row2.append(allocator, 4);
+    try row2.append(allocator, 5);
+    try row2.append(allocator, 6);
+    try matrix.append(allocator, row2);
 
     // Create third row [7, 8, 9]
-    var row3 = std.ArrayList(i32).init(allocator);
-    try row3.append(7);
-    try row3.append(8);
-    try row3.append(9);
-    try matrix.append(row3);
+    var row3: std.ArrayList(i32) = .{};
+    try row3.append(allocator, 7);
+    try row3.append(allocator, 8);
+    try row3.append(allocator, 9);
+    try matrix.append(allocator, row3);
 
     std.debug.print("   Matrix ({} rows):\n", .{matrix.items.len});
     for (matrix.items, 0..) |row, i| {

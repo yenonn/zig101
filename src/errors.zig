@@ -110,22 +110,16 @@ fn catchingErrors() !void {
     }
 
     // Method 4: Using catch with error variable
-    const result3 = parseNumber("bad") catch |err| {
+    const result3 = parseNumber("bad") catch |err| blk: {
         std.debug.print("   Caught error: {}\n", .{err});
-        return err; // Re-throw the error
+        break :blk 0; // Return a default value instead of re-throwing
     };
-    _ = result3; // This line won't execute
+    std.debug.print("   Result3 (with caught error): {}\n", .{result3});
 }
 
 /// 5. Error payloads - getting the actual error value
 fn errorPayloads() !void {
     std.debug.print("\n5. Error Payloads:\n", .{});
-
-    const MathError = error{
-        DivisionByZero,
-        Overflow,
-        Underflow,
-    };
 
     const result = safeDivide(10, 0);
 
@@ -135,10 +129,8 @@ fn errorPayloads() !void {
     } else |err| {
         std.debug.print("   Caught error: ", .{});
         switch (err) {
-            MathError.DivisionByZero => std.debug.print("Cannot divide by zero!\n", .{}),
-            MathError.Overflow => std.debug.print("Number too large!\n", .{}),
-            MathError.Underflow => std.debug.print("Number too small!\n", .{}),
-            else => std.debug.print("Unknown error\n", .{}),
+            error.DivisionByZero => std.debug.print("Cannot divide by zero!\n", .{}),
+            error.Overflow => std.debug.print("Number too large!\n", .{}),
         }
     }
 }
