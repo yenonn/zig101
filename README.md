@@ -36,6 +36,15 @@ This project demonstrates various Zig programming concepts through practical, ru
   - `defer` and `errdefer` for cleanup
   - Real-world validation examples
 
+### Concurrency
+- **Concurrency** (`src/concurrency.zig`) - Multi-threading and synchronization:
+  - Basic thread creation and joining
+  - Thread pool patterns
+  - Mutex for thread-safe operations
+  - Atomic operations (lock-free)
+  - Producer-consumer pattern
+  - Parallel computation examples
+
 ## Getting Started
 
 ### Prerequisites
@@ -50,8 +59,44 @@ zig build
 # Run all examples
 zig build run
 
-# Run tests (if available)
-zig build test
+# Run a specific demo
+zig build run -- [DEMO_NAME]
+
+# List available demos
+zig build run -- --list
+
+# Show help
+zig build run -- --help
+```
+
+### Running Individual Demos
+
+You can run specific demos individually:
+
+```bash
+# ArrayList examples
+zig build run -- arraylist
+
+# HashMap examples
+zig build run -- hashtable
+
+# Struct examples
+zig build run -- structs
+
+# Constructor patterns
+zig build run -- constructors
+
+# Interface patterns
+zig build run -- interfaces
+
+# String manipulation
+zig build run -- strings
+
+# Error handling
+zig build run -- errors
+
+# Concurrency examples
+zig build run -- concurrency
 ```
 
 ## Project Structure
@@ -66,7 +111,8 @@ zig101/
 │   ├── constructors.zig      # Constructor patterns
 │   ├── interfaces.zig        # Interface implementations
 │   ├── strings.zig           # String manipulation
-│   └── errors.zig            # Error handling patterns
+│   ├── errors.zig            # Error handling patterns
+│   └── concurrency.zig       # Concurrency and threading
 ├── build.zig                 # Build configuration
 └── README.md                 # This file
 ```
@@ -93,7 +139,13 @@ Consistent use of:
 
 ## Running Individual Examples
 
-Each module contains a `demo()` function and additional example functions. To run specific examples, modify `src/main.zig` to comment out unwanted demos.
+Each module contains a `demo()` function and additional example functions. You can run individual demos using command-line arguments:
+
+```bash
+zig build run -- [DEMO_NAME]
+```
+
+Available demos: `arraylist`, `hashtable`, `structs`, `constructors`, `interfaces`, `strings`, `errors`, `concurrency`
 
 ## Learning Path
 
@@ -105,6 +157,7 @@ Recommended order for beginners:
 5. Constructor patterns (`constructors.zig`)
 6. Interface patterns (`interfaces.zig`)
 7. Error handling (`errors.zig`)
+8. Concurrency (`concurrency.zig`)
 
 ## License
 
