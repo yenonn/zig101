@@ -28,6 +28,14 @@ This project demonstrates various Zig programming concepts through practical, ru
   - Case conversion
   - Parsing and formatting
 
+### Error Handling
+- **Errors** (`src/errors.zig`) - Comprehensive error handling patterns:
+  - Basic error propagation with `try`
+  - Custom error sets and error unions
+  - Catching and handling errors
+  - `defer` and `errdefer` for cleanup
+  - Real-world validation examples
+
 ## Getting Started
 
 ### Prerequisites
@@ -57,7 +65,8 @@ zig101/
 │   ├── structs.zig           # Struct patterns
 │   ├── constructors.zig      # Constructor patterns
 │   ├── interfaces.zig        # Interface implementations
-│   └── strings.zig           # String manipulation
+│   ├── strings.zig           # String manipulation
+│   └── errors.zig            # Error handling patterns
 ├── build.zig                 # Build configuration
 └── README.md                 # This file
 ```
@@ -95,6 +104,7 @@ Recommended order for beginners:
 4. HashMaps (`hashtable.zig`)
 5. Constructor patterns (`constructors.zig`)
 6. Interface patterns (`interfaces.zig`)
+7. Error handling (`errors.zig`)
 
 ## License
 

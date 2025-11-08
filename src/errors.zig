@@ -215,7 +215,7 @@ fn processFile(allocator: std.mem.Allocator, filename: []const u8) !void {
     std.debug.print("   Opening file: {s}\n", .{filename});
 
     // Simulate file buffer allocation
-    var buffer = try allocator.alloc(u8, 1024);
+    const buffer = try allocator.alloc(u8, 1024);
     defer allocator.free(buffer);
 
     // errdefer cleans up only if an error happens after this point
