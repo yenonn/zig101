@@ -5,6 +5,7 @@ const structs = @import("structs.zig");
 const constructors = @import("constructors.zig");
 const interfaces = @import("interfaces.zig");
 const strings = @import("strings.zig");
+const errors = @import("errors.zig");
 
 pub fn main() !void {
     // Setup allocator for memory management
@@ -44,4 +45,10 @@ pub fn main() !void {
 
     // Run the advanced string example
     try strings.advancedExample(allocator);
+
+    // Run the Error handling demo
+    try errors.demo(allocator);
+
+    // Run the advanced error example
+    try errors.advancedErrorExample();
 }
