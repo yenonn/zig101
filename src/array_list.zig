@@ -6,6 +6,10 @@ pub fn demo(allocator: std.mem.Allocator) !void {
 
     try demoWithIntegers(allocator);
     try demoWithStrings(allocator);
+    try demoWithStructs(allocator);
+    try demoWithFloats(allocator);
+    try demoWithBooleans(allocator);
+    try demoNestedArrayLists(allocator);
 
     std.debug.print("\n=== Demo Complete ===\n", .{});
 }
@@ -97,4 +101,149 @@ fn demoWithStrings(allocator: std.mem.Allocator) !void {
     for (string_list.items, 0..) |str, i| {
         std.debug.print("   [{}]: {s}\n", .{ i, str });
     }
+    std.debug.print("\n", .{});
+}
+
+/// Person struct for demonstrating ArrayList with custom types
+const Person = struct {
+    name: []const u8,
+    age: u32,
+
+    pub fn format(
+        self: Person,
+        comptime fmt: []const u8,
+        options: std.fmt.FormatOptions,
+        writer: anytype,
+    ) !void {
+        _ = fmt;
+        _ = options;
+        try writer.print("Person{{ name: {s}, age: {} }}", .{ self.name, self.age });
+    }
+};
+
+/// Demonstrates ArrayList with custom struct types
+fn demoWithStructs(allocator: std.mem.Allocator) !void {
+    std.debug.print("10. ArrayList with structs:\n", .{});
+    var people = std.ArrayList(Person).init(allocator);
+    defer people.deinit();
+
+    // Adding struct instances
+    try people.append(.{ .name = "Alice", .age = 30 });
+    try people.append(.{ .name = "Bob", .age = 25 });
+    try people.append(.{ .name = "Charlie", .age = 35 });
+
+    std.debug.print("   People in list:\n", .{});
+    for (people.items, 0..) |person, i| {
+        std.debug.print("   [{}]: {}\n", .{ i, person });
+    }
+
+    // Modifying a struct field
+    people.items[1].age = 26;
+    std.debug.print("   Updated Bob's age to: {}\n", .{people.items[1].age});
+    std.debug.print("\n", .{});
+}
+
+/// Demonstrates ArrayList with floating-point numbers
+fn demoWithFloats(allocator: std.mem.Allocator) !void {
+    std.debug.print("11. ArrayList with floats:\n", .{});
+    var numbers = std.ArrayList(f64).init(allocator);
+    defer numbers.deinit();
+
+    // Adding floating-point numbers
+    try numbers.append(3.14159);
+    try numbers.append(2.71828);
+    try numbers.append(1.41421);
+    try numbers.append(1.73205);
+
+    std.debug.print("   Mathematical constants:\n", .{});
+    const names = [_][]const u8{ "Pi", "e", "√2", "√3" };
+    for (numbers.items, 0..) |num, i| {
+        std.debug.print("   {s}: {d:.5}\n", .{ names[i], num });
+    }
+
+    // Calculate average
+    var sum: f64 = 0;
+    for (numbers.items) |num| {
+        sum += num;
+    }
+    const average = sum / @as(f64, @floatFromInt(numbers.items.len));
+    std.debug.print("   Average: {d:.5}\n", .{average});
+    std.debug.print("\n", .{});
+}
+
+/// Demonstrates ArrayList with boolean values
+fn demoWithBooleans(allocator: std.mem.Allocator) !void {
+    std.debug.print("12. ArrayList with booleans:\n", .{});
+    var flags = std.ArrayList(bool).init(allocator);
+    defer flags.deinit();
+
+    // Adding boolean values
+    try flags.append(true);
+    try flags.append(false);
+    try flags.append(true);
+    try flags.append(true);
+    try flags.append(false);
+
+    std.debug.print("   Flags: ", .{});
+    for (flags.items) |flag| {
+        std.debug.print("{} ", .{flag});
+    }
+    std.debug.print("\n", .{});
+
+    // Count true values
+    var true_count: usize = 0;
+    for (flags.items) |flag| {
+        if (flag) true_count += 1;
+    }
+    std.debug.print("   True count: {}/{}\n", .{ true_count, flags.items.len });
+    std.debug.print("\n", .{});
+}
+
+/// Demonstrates nested ArrayLists (ArrayList of ArrayLists)
+fn demoNestedArrayLists(allocator: std.mem.Allocator) !void {
+    std.debug.print("13. Nested ArrayLists (2D array-like structure):\n", .{});
+
+    // Create an ArrayList that holds other ArrayLists
+    var matrix = std.ArrayList(std.ArrayList(i32)).init(allocator);
+    defer {
+        // Important: must deinit each inner ArrayList
+        for (matrix.items) |*row| {
+            row.deinit();
+        }
+        matrix.deinit();
+    }
+
+    // Create first row [1, 2, 3]
+    var row1 = std.ArrayList(i32).init(allocator);
+    try row1.append(1);
+    try row1.append(2);
+    try row1.append(3);
+    try matrix.append(row1);
+
+    // Create second row [4, 5, 6]
+    var row2 = std.ArrayList(i32).init(allocator);
+    try row2.append(4);
+    try row2.append(5);
+    try row2.append(6);
+    try matrix.append(row2);
+
+    // Create third row [7, 8, 9]
+    var row3 = std.ArrayList(i32).init(allocator);
+    try row3.append(7);
+    try row3.append(8);
+    try row3.append(9);
+    try matrix.append(row3);
+
+    std.debug.print("   Matrix ({} rows):\n", .{matrix.items.len});
+    for (matrix.items, 0..) |row, i| {
+        std.debug.print("   Row {}: ", .{i});
+        for (row.items) |val| {
+            std.debug.print("{} ", .{val});
+        }
+        std.debug.print("\n", .{});
+    }
+
+    // Access specific element (row 1, column 2)
+    std.debug.print("   Element at [1][2]: {}\n", .{matrix.items[1].items[2]});
+    std.debug.print("\n", .{});
 }
